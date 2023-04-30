@@ -1,0 +1,5 @@
+pynvml
+flask
+requests
+psutil
+pandas

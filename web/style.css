@@ -1,0 +1,154 @@
+.inline {
+    display: inline-block;
+}
+
+#content-status-sample {
+    display: none;
+}
+
+body {
+    text-align: center;
+}
+
+body>* {
+    position: relative;
+}
+
+#content-status {
+    display: block;
+    text-align: center;
+}
+
+/*colum width*/
+.colum {
+    border-left: 1px solid black;
+    text-align: center;
+    display: inline-block;
+    white-space: normal;
+}
+
+.colum:nth-child(1) {
+    border-left: 1px solid white;
+}
+
+.colum.node-status {
+    border: none;
+}
+
+.colum.node-version {
+    border: none;
+    font-weight: 600;
+    margin-left: 30px;
+}
+
+.colum.node-ip {
+    border: none;
+    font-weight: 600;
+    margin-left: 30px;
+}
+
+/*spacing*/
+.node-line {
+    margin-bottom: 15px;
+}
+
+.gpu-line {
+    border-bottom: 2px solid lightblue;
+    padding: 5px 0 5px 0;
+}
+
+.node-info {
+    margin: 0px 0 0px 0;
+    /*border-left: 5px solid darkgrey;*/
+}
+
+.node-name {
+    font-size: 20px;
+    font-weight: 700;
+    width: 150px;
+}
+
+.node-status {
+    width: 2em;
+    height: 1em;
+}
+
+.node-status[data-status="true"] {
+    background-color: skyblue;
+}
+
+.node-status[data-status="false"] {
+    background-color: brown;
+}
+
+/*head*/
+.title{
+    margin:20px 0 10px 0;
+    text-align:center;
+}
+.control{
+    text-align:center;
+    font-size: 18px;
+    margin: 0px 20px 0px 20px;
+}
+
+.control.btn-line{
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+#head-line {
+    padding: 5px 0 5px 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.control a {
+    font-size: 20px;
+    color: skyblue;
+    font-weight: bold;
+}
+
+/*Update 2022.7.25 set the width of each column*/
+.colum.gpu-idx {
+    width: 100px;
+}
+.colum.memory {
+    width: 200px;
+}
+.colum.utilize {
+    width: 100px;
+}
+.colum.users {
+    width: 150px;
+}
+.head {
+    display: inline-block;
+}
+#head-line{
+    white-space: nowrap;
+    width: auto;
+    background-color: PapayaWhip;
+    display: inline-block; /*populate content*/
+}
+.gpu-line{
+    white-space: nowrap;
+    width: auto;
+    display: inline-block;
+}
+
+#head-wrapper{
+    padding: 10px 0 10px 0;
+    text-align: center;
+    width: auto;
+}
+.nav-at-top{
+    position: fixed;
+    top: 0;
+    width:100%;
+    margin-left: -275px; /*half of the width*/
+}
+
+#display-area{
+    text-align: center;
+}
