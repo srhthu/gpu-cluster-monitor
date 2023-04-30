@@ -79,7 +79,7 @@ print(json.dumps(res.json(), indent = 4))
 
 The structure of node status:
 
-```JSON
+```Bash
 {
     "hostname": (`str`)
     "last_update": (`str`) isoformat, e.g., "2023-04-29T21:17:41.419592"
