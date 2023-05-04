@@ -84,11 +84,14 @@ class NodeStat:
         ser_map = {}
         N.nvmlInit()
         for gpu_idx in range(N.nvmlDeviceGetCount()):
-            handle = N.nvmlDeviceGetHandleByIndex(gpu_idx)
-            r = N.nvmlDeviceGetSerial(handle)
-            if isinstance(r, bytes):
-                r = r.decode()
-            ser_map[r] = gpu_idx
+            try:
+                handle = N.nvmlDeviceGetHandleByIndex(gpu_idx)
+                r = N.nvmlDeviceGetSerial(handle)
+                if isinstance(r, bytes):
+                    r = r.decode()
+                ser_map[r] = gpu_idx
+            except N.NVMLError as e:
+                print(f"Error occurred: NVML Device Serial {e}")
         N.nvmlShutdown()
         return ser_map
 
