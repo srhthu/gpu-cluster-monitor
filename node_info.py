@@ -103,7 +103,7 @@ class NodeStat:
             try:
                 handle = N.nvmlDeviceGetHandleByIndex(gpu_idx)
                 pci_info = N.nvmlDeviceGetPciInfo(handle)
-                pci_id = f"{hostname}:{pci_info.domain:04X}:{pci_info.bus:02X}:{pci_info.device:02X}.{pci_info.pciDeviceId:04X}:{pci_info.pciSubSystemId:04X}"
+                pci_id = f"{hostname}:{pci_info.domain:02X}:{pci_info.bus:02X}:{pci_info.device:02X}.{pci_info.pciDeviceId:08X}:{pci_info.pciSubSystemId:08X}"
                 ser_map[pci_id] = gpu_idx
             except N.NVMLError as e:
                 print(f"Error occurred: NVML Device Serial {e}")
@@ -152,27 +152,49 @@ class NodeStat:
         N.nvmlShutdown()
         return gpus
     
+    # def get_gpu_process(self):
+    #     command = 'nvidia-smi --query-compute-apps=gpu_serial,pid,used_memory --format=csv'
+    #     p = subprocess.Popen(command, shell=True, close_fds=True, bufsize=-1,
+    #                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    #     p.wait(10)
+    #     df = pd.read_csv(p.stdout, dtype = str)
+    #     # columns: gpu_serial, pid, used_gpu_memory [MiB]
+    #     df.rename(lambda k: k.strip(), axis = 'columns', inplace = True)
+    #     # print(df.columns)
+    #     df['pid'] = df['pid'].astype(int)
+    #     df['idx'] = df['gpu_serial'].apply(lambda k: self.serial_map[k])
+    #     df['mem(MiB)'] = df['used_gpu_memory [MiB]'].apply(lambda k: int(k.split()[0]))
+
+    #     gpu2procs = df.groupby('idx')[['pid', 'mem(MiB)']].apply(
+    #                     lambda k: k.to_dict('records')).to_dict()
+    #     for procs in gpu2procs.values():
+    #         for proc in procs:
+    #             proc['username'], proc['command'] = self.get_proc_info(proc['pid'])
+        
+    #     new_gpu2procs = {idx:[p for p in procs if p['username']] for idx,procs in gpu2procs.items()}
+
+    #     return new_gpu2procs
+
     def get_gpu_process(self):
-        command = 'nvidia-smi --query-compute-apps=gpu_serial,pid,used_memory --format=csv'
+        command = 'nvidia-smi --query-compute-apps=gpu_uuid,pid,used_memory --format=csv'
         p = subprocess.Popen(command, shell=True, close_fds=True, bufsize=-1,
-                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         p.wait(10)
         df = pd.read_csv(p.stdout, dtype = str)
-        # columns: gpu_serial, pid, used_gpu_memory [MiB]
+        # columns: gpu_uuid, pid, used_gpu_memory [MiB]
         df.rename(lambda k: k.strip(), axis = 'columns', inplace = True)
         # print(df.columns)
         df['pid'] = df['pid'].astype(int)
-        df['idx'] = df['pci_id'].apply(lambda k: self.serial_map[k])
+        df['idx'] = df['gpu_uuid'].apply(lambda k: self.serial_map.get(k, -1))
+        df = df[df['idx'] != -1]  # remove processes not using GPUs
         df['mem(MiB)'] = df['used_gpu_memory [MiB]'].apply(lambda k: int(k.split()[0]))
-
         gpu2procs = df.groupby('idx')[['pid', 'mem(MiB)']].apply(
                         lambda k: k.to_dict('records')).to_dict()
         for procs in gpu2procs.values():
             for proc in procs:
                 proc['username'], proc['command'] = self.get_proc_info(proc['pid'])
-        
-        new_gpu2procs = {idx:[p for p in procs if p['username']] for idx,procs in gpu2procs.items()}
 
+        new_gpu2procs = {idx:[p for p in procs if p['username']] for idx,procs in gpu2procs.items()}
         return new_gpu2procs
 
     def get_proc_info(self, pid):
