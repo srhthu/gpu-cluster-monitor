@@ -104,10 +104,12 @@ class Cluster:
 
         for host in self.hosts:
             node = self.nodes[host] or self._psudo_node(host)
-            node['version'] = node['gpus'][0]['name'] if node['gpus'] else ''
+            gpu_names = [gpu['name'] for gpu in node['gpus']] if node['gpus'] else []
+            node['version'] = gpu_names
             status['Nodes'].append(node)
         
         return status
+
 
         
     def get_status(self):
