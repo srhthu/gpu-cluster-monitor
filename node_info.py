@@ -79,21 +79,6 @@ class NodeStat:
         self.th_referesh.exit()
         self.th_proc.start()
 
-    # def get_gpu_serial(self):
-    #     """map from serial to index(int)"""
-    #     ser_map = {}
-    #     N.nvmlInit()
-    #     for gpu_idx in range(N.nvmlDeviceGetCount()):
-    #         try:
-    #             handle = N.nvmlDeviceGetHandleByIndex(gpu_idx)
-    #             r = N.nvmlDeviceGetSerial(handle)
-    #             if isinstance(r, bytes):
-    #                 r = r.decode()
-    #             ser_map[r] = gpu_idx
-    #         except N.NVMLError as e:
-    #             print(f"Error occurred: NVML Device Serial {e}")
-    #     N.nvmlShutdown()
-    #     return ser_map
     def get_gpu_serial(self):
         """map from gpu_uuid to index(int)"""
         ser_map = {}
@@ -150,28 +135,6 @@ class NodeStat:
         N.nvmlShutdown()
         return gpus
     
-    # def get_gpu_process(self):
-    #     command = 'nvidia-smi --query-compute-apps=gpu_serial,pid,used_memory --format=csv'
-    #     p = subprocess.Popen(command, shell=True, close_fds=True, bufsize=-1,
-    #                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    #     p.wait(10)
-    #     df = pd.read_csv(p.stdout, dtype = str)
-    #     # columns: gpu_serial, pid, used_gpu_memory [MiB]
-    #     df.rename(lambda k: k.strip(), axis = 'columns', inplace = True)
-    #     # print(df.columns)
-    #     df['pid'] = df['pid'].astype(int)
-    #     df['idx'] = df['gpu_serial'].apply(lambda k: self.serial_map[k])
-    #     df['mem(MiB)'] = df['used_gpu_memory [MiB]'].apply(lambda k: int(k.split()[0]))
-
-    #     gpu2procs = df.groupby('idx')[['pid', 'mem(MiB)']].apply(
-    #                     lambda k: k.to_dict('records')).to_dict()
-    #     for procs in gpu2procs.values():
-    #         for proc in procs:
-    #             proc['username'], proc['command'] = self.get_proc_info(proc['pid'])
-        
-    #     new_gpu2procs = {idx:[p for p in procs if p['username']] for idx,procs in gpu2procs.items()}
-
-    #     return new_gpu2procs
 
     def get_gpu_process(self):
         command = 'nvidia-smi --query-compute-apps=gpu_uuid,pid,used_memory --format=csv'
