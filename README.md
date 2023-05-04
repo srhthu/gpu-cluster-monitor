@@ -19,7 +19,7 @@ This project aims to provide a HTML interface to display GPU usages of multiple 
 Install packages (tested with python=3.9).
 
 ```Bash
-pip install -r requirements.txt
+pip install -r requirments.txt
 ```
 
 Assume we have a cluster with two nodes (node_1: 192.168.0.1; node_2: 192.168.0.2) and node_1 is the main node to display cluster information.
