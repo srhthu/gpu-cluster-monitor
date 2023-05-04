@@ -95,18 +95,16 @@ class NodeStat:
     #     N.nvmlShutdown()
     #     return ser_map
     def get_gpu_serial(self):
-        """map from pci_id to index(int)"""
+        """map from gpu_uuid to index(int)"""
         ser_map = {}
         N.nvmlInit()
-        hostname = self.get_hostname()
         for gpu_idx in range(N.nvmlDeviceGetCount()):
             try:
                 handle = N.nvmlDeviceGetHandleByIndex(gpu_idx)
-                pci_info = N.nvmlDeviceGetPciInfo(handle)
-                pci_id = f"{hostname}:{pci_info.domain:02X}:{pci_info.bus:02X}:{pci_info.device:02X}.{pci_info.pciDeviceId:08X}:{pci_info.pciSubSystemId:08X}"
-                ser_map[pci_id] = gpu_idx
+                gpu_uuid = N.nvmlDeviceGetUUID(handle)
+                ser_map[gpu_uuid] = gpu_idx
             except N.NVMLError as e:
-                print(f"Error occurred: NVML Device Serial {e}")
+                print(f"Error occurred: NVML Device UUID {e}")
         N.nvmlShutdown()
         return ser_map
 
