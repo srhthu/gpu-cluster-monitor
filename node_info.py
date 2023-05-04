@@ -162,7 +162,7 @@ class NodeStat:
         df.rename(lambda k: k.strip(), axis = 'columns', inplace = True)
         # print(df.columns)
         df['pid'] = df['pid'].astype(int)
-        df['idx'] = df['gpu_serial'].apply(lambda k: self.serial_map[k])
+        df['idx'] = df['pci_id'].apply(lambda k: self.serial_map[k])
         df['mem(MiB)'] = df['used_gpu_memory [MiB]'].apply(lambda k: int(k.split()[0]))
 
         gpu2procs = df.groupby('idx')[['pid', 'mem(MiB)']].apply(
