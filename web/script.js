@@ -51,7 +51,6 @@ function create_page(data){
         // node information
         node.find(".node-name").text(n_data.hostname);
         node.find(".node-status").attr("data-status", n_data.status);
-        node.find('.node-version').text(n_data.version);
         if (n_data.ips) {
             ips = n_data.ips;
             var ip_str = '';
@@ -68,6 +67,10 @@ function create_page(data){
             var gpu_line = $("<div></div>").addClass("gpu-line");
             gpu_line.append($("<div></div>").addClass("colum gpu-idx").text(gpu_data.index))
             
+            // get the GPU name from the node dictionary
+            var gpu_name = n_data.gpus[j].name;
+            gpu_line.append($("<div></div>").addClass("colum gpu-name").text(gpu_name));
+
             //memory
             gpu_line.append($("<div></div>").addClass("colum memory").text(gpu_data.use_mem + "/" + gpu_data.tot_mem));
             var mem_per = gpu_data.use_mem / gpu_data.tot_mem * 100;
