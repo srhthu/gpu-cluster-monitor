@@ -3,7 +3,10 @@
 
 ## Introduction
 
-This project aims to provide a HTML interface to display GPU usages of multiple nodes. As shown in Figure 1. The main node poll each GPU node to collect their statuses and make them avaiable to public via API.
+This project aims to provide a Web application to display GPU usages of multiple nodes. 
+
+The framework is shown in Figure 1. One **each node**, the process `node_info.py` deploys a REST API for the access of node information, such as GPU numbers and usages.
+The status informatio of all nodes are merged by the process `api.py` running on one **main** node. This process also deploys the API to provide the combined information and a web application.
 
 <center>
 <img src="doc/monitor_paradim.jpeg"  width="70%" height="70%" />
